@@ -5,14 +5,40 @@ module.exports = {
     get: function (callback) {
       // a function which produces all the messages
       // 1) pulls the data from our database
-      // 2) call the callback
       
+      db.connection.query('SELECT * FROM messages', function(err, results, fields) {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('fields: ', fields);
+          console.log('results: ', results); 
+          callback(results);
+        }
+      });      
     }, 
-    post: function () {
-    // a function which adds a new message to our SQL database
-    // 1) collect the incoming message data into a variable
-    
-      // 2) call INSERT INTO (tablename) VALUES (user, room, message)
+    post: function (message, callback) {
+      
+      var sqlString = '';
+      sqlString += 'INSERT INTO messages VALUES';
+      sqlString += 'user = ?, room = ?, message_text = ?,';
+      
+      var sqlVals = [message.username, message.roomname, message.message];
+      
+      sqlString += JSON.stringify(sqlVals);
+      
+      // sqlString += '[' + message.username;
+      // sqlString += ', ' + message.roomname;
+      // sqlString += ', ' + message.message + ']';
+      
+      db.connection.query(sqlString, function(err, results, fields) {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('fields: ', fields);
+          console.log('results: ', results); 
+          callback(results);
+        }
+      });
     }
   },
 
