@@ -34,20 +34,20 @@ module.exports = {
           }
         }
         
-        var query = '';
+        userId = userId || results.length + 1;
+        
+        var messageQuery = 'INSERT INTO messages (room, user, message_text) VALUES ( \'' + message.roomname + '\' , ' + userId + ', \'' + message.text + '\')';
+        
         if (newUser) {
-          userId = results.length + 1;
           // add user to usernames table in database
-          query += 'INSERT INTO usernames (id, name) VALUES (' + userId + ', \'' + message.username + '\') ';
+          var userQuery = 'INSERT INTO usernames (id, name) VALUES (' + userId + ', \'' + message.username + '\') ';
           
-          db.connection.query(query, function(err, results, fields) {
+          db.connection.query(userQuery, function(err, results, fields) {
             if (err) {
               console.error(err);
             } else { 
               
-              query = 'INSERT INTO messages (room, user, message_text) VALUES ( \'' + message.roomname + '\' , ' + userId + ', \'' + message.text + '\')';
-              
-              db.connection.query(query, function(err, finalResults, finalFields) {
+              db.connection.query(messageQuery, function(err, finalResults, finalFields) {
                 if (err) {
                   console.error(err);
                 } else { 
@@ -59,10 +59,8 @@ module.exports = {
           
           
         } else {
-          
-          query += 'INSERT INTO messages (room, user, message_text) VALUES ( \'' + message.roomname + '\' , ' + userId + ', \'' + message.text + '\')';
         
-          db.connection.query(query, function(err, results, fields) {
+          db.connection.query(messageQuery, function(err, results, fields) {
             if (err) {
               console.error(err);
             } else { 
