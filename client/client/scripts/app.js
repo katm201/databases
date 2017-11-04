@@ -60,28 +60,29 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'GET',
-      data: { order: '-createdAt' },
+      // data: { order: '-createdAt' },
       contentType: 'application/json',
       success: function(data) {
+        console.log('we are getting data: ', data);
         // Don't bother if we have nothing to work with
-        if (!data.results || !data.results.length) { return; }
+        // if (!data.results || !data.results.length) { return; }
 
         // Store messages for caching later
-        app.messages = data.results;
-        console.log('data: ', data);
+        app.messages = JSON.parse(data);
         // Get the last message
-        var mostRecentMessage = data.results[0];
+        var mostRecentMessage = app.messages[app.messages.length - 1];
+
 
         // Only bother updating the DOM if we have a new message
-        if (mostRecentMessage.objectId !== app.lastMessageId) {
+        if (mostRecentMessage.id !== app.lastMessageId) {
           // Update the UI with the fetched rooms
-          app.renderRoomList(data.results);
+          app.renderRoomList(app.messages);
 
           // Update the UI with the fetched messages
-          app.renderMessages(data.results, animate);
+          app.renderMessages(app.messages, animate);
 
           // Store the ID of the most recent message
-          app.lastMessageId = mostRecentMessage.objectId;
+          app.lastMessageId = mostRecentMessage.id;
         }
       },
       error: function(error) {
@@ -144,8 +145,8 @@ var app = {
   },
 
   renderMessage: function(message) {
-    if (!message.roomname) {
-      message.roomname = 'lobby';
+    if (!message.room) {
+      message.room = 'lobby';
     }
 
     // Create a div to hold the chats
@@ -154,15 +155,15 @@ var app = {
     // Add in the message data using DOM methods to avoid XSS
     // Store the username in the element's data attribute
     var $username = $('<span class="username"/>');
-    $username.text(message.username + ': ').attr('data-roomname', message.roomname).attr('data-username', message.username).appendTo($chat);
+    $username.text(message.user + ': ').attr('data-roomname', message.room).attr('data-username', message.user).appendTo($chat);
 
     // Add the friend class
-    if (app.friends[message.username] === true) {
+    if (app.friends[message.user] === true) {
       $username.addClass('friend');
     }
 
     var $message = $('<br><span/>');
-    $message.text(message.text).appendTo($chat);
+    $message.text(message.message_text).appendTo($chat);
 
     // Add the message to the UI
     app.$chats.append($chat);
