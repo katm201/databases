@@ -6,7 +6,9 @@ module.exports = {
       // a function which produces all the messages
       // 1) pulls the data from our database
       
-      db.connection.query('SELECT * FROM messages', function(err, results, fields) {
+      let sqlString = 'SELECT messages.id, messages.room, usernames.name, messages.message_text FROM messages, usernames WHERE usernames.id = messages.user';
+      
+      db.connection.query(sqlString, function(err, results, fields) {
         if (err) {
           console.error(err);
         } else {
