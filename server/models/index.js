@@ -3,50 +3,80 @@ var db = require('../db');
 module.exports = {
   messages: {
     get: function (query, callback) {
-      // a function which produces all the messages
-      // 1) pulls the data from our database
       
-      let sqlString = 'SELECT messages.id, messages.room, usernames.name, messages.message_text FROM messages, usernames WHERE usernames.id = messages.user';
+      if (Object.keys(query).length === 0) {
+        query = 'SELECT messages.id, messages.room, usernames.name, messages.message_text FROM messages, usernames WHERE usernames.id = messages.user';
+      }
       
-      db.connection.query(sqlString, function(err, results, fields) {
+      db.connection.query(query, function(err, results, fields) {
         if (err) {
           console.error(err);
-        } else {
-          console.log(results);
-          // console.log('fields: ', fields);
-          // console.log('results: ', results); 
+        } else { 
           callback(results);
         }
       });      
     }, 
     post: function (message, callback) {
       
-      var sqlString = '';
-      sqlString += 'INSERT INTO messages VALUES';
-      sqlString += 'user = ?, room = ?, message_text = ?,';
-      
-      var sqlVals = [message.username, message.roomname, message.message];
-      
-      sqlString += JSON.stringify(sqlVals);
-      
-      // sqlString += '[' + message.username;
-      // sqlString += ', ' + message.roomname;
-      // sqlString += ', ' + message.message + ']';
-      
-      db.connection.query(sqlString, function(err, results, fields) {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log('fields: ', fields);
-          console.log('results: ', results); 
-          callback(results);
+      // retrieve usernames
+        // if username isn't present
+          // insert into both usernames and the message
+        // if username is present, insert message (using the user's key)
+        
+      module.exports.messages.get('SELECT * FROM usernames', function(results) {
+        var newUser = true;
+        var userId;
+
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].name === message.username) {
+            newUser = false;
+            userId = results[i].id;
+          }
         }
+        
+        var query = '';
+        if (newUser) {
+          userId = results.length + 1;
+          // add user to usernames table in database
+          query += 'INSERT INTO usernames (id, name) VALUES (' + userId + ', \'' + message.username + '\') ';
+          
+          db.connection.query(query, function(err, results, fields) {
+            if (err) {
+              console.error(err);
+            } else { 
+              
+              query = 'INSERT INTO messages (room, user, message_text) VALUES ( \'' + message.roomname + '\' , ' + userId + ', \'' + message.text + '\')';
+              
+              db.connection.query(query, function(err, finalResults, finalFields) {
+                if (err) {
+                  console.error(err);
+                } else { 
+                  callback(finalResults);
+                }
+              }); 
+            }
+          });
+          
+          
+        } else {
+          
+          query += 'INSERT INTO messages (room, user, message_text) VALUES ( \'' + message.roomname + '\' , ' + userId + ', \'' + message.text + '\')';
+        
+          db.connection.query(query, function(err, results, fields) {
+            if (err) {
+              console.error(err);
+            } else { 
+              callback(results);
+            }
+          });
+          
+        }
+ 
       });
     }
   },
 
   users: {
-    // Ditto as above.
     get: function () {},
     post: function () {}
   }
