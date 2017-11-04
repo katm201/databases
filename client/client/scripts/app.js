@@ -42,7 +42,8 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'POST',
-      data: message,
+      contentType: 'application/json',
+      data: JSON.stringify(message),
       success: function (data) {
         // Clear messages input
         app.$message.val('');
@@ -219,6 +220,7 @@ var app = {
       roomname: app.roomname || 'lobby'
     };
 
+    console.log(JSON.stringify(message));
     app.send(message);
 
     // Stop the form from submitting

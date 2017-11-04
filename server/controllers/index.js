@@ -11,7 +11,12 @@ module.exports = {
         response.end(JSON.stringify(results));
       });
     }, // a function which handles a get request for all messages
-    post: function (req, res) {}, // a function which handles posting a message to the database
+    post: function (request, response) {
+      models.messages.post(request.body, function(results) {
+        response.end(JSON.stringify(results));
+      });
+    }, // a function which handles posting a message to the database
+    
     
   },
 
