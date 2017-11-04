@@ -1,10 +1,18 @@
 var models = require('../models');
+var req = require('request');
+var express = require('express');
+// var expResponse = require('express-response');
 
 module.exports = {
   messages: {
-    get: function (req, res) {}, // a function which handles a get request for all messages
-      // calls models.messages.get(callback)
-    post: function (req, res) {} // a function which handles posting a message to the database
+    get: function (request, response) {
+      let query = request.query;
+      models.messages.get(query, function(results) {
+        response.end(JSON.stringify(results));
+      });
+    }, // a function which handles a get request for all messages
+    post: function (req, res) {}, // a function which handles posting a message to the database
+    
   },
 
   users: {

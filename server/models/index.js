@@ -2,7 +2,7 @@ var db = require('../db');
 
 module.exports = {
   messages: {
-    get: function (callback) {
+    get: function (query, callback) {
       // a function which produces all the messages
       // 1) pulls the data from our database
       
@@ -10,8 +10,9 @@ module.exports = {
         if (err) {
           console.error(err);
         } else {
-          console.log('fields: ', fields);
-          console.log('results: ', results); 
+          console.log(results);
+          // console.log('fields: ', fields);
+          // console.log('results: ', results); 
           callback(results);
         }
       });      
