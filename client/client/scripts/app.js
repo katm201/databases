@@ -104,8 +104,8 @@ var app = {
       // Add all fetched messages that are in our current room
       messages
         .filter(function(message) {
-          return message.roomname === app.roomname ||
-                 app.roomname === 'lobby' && !message.roomname;
+          return message.room === app.roomname ||
+                 app.roomname === 'lobby' && !message.room;
         })
         .forEach(app.renderMessage);
     }
@@ -122,7 +122,7 @@ var app = {
     if (messages) {
       var rooms = {};
       messages.forEach(function(message) {
-        var roomname = message.roomname;
+        var roomname = message.room;
         if (roomname && !rooms[roomname]) {
           // Add the room to the select menu
           app.renderRoom(roomname);
@@ -156,15 +156,15 @@ var app = {
     // Add in the message data using DOM methods to avoid XSS
     // Store the username in the element's data attribute
     var $username = $('<span class="username"/>');
-    $username.text(message.name + ': ').attr('data-roomname', message.room).attr('data-username', message.name).appendTo($chat);
+    $username.text(message.user + ': ').attr('data-roomname', message.room).attr('data-username', message.user).appendTo($chat);
 
     // Add the friend class
-    if (app.friends[message.name] === true) {
+    if (app.friends[message.user] === true) {
       $username.addClass('friend');
     }
 
     var $message = $('<br><span/>');
-    $message.text(message.message_text).appendTo($chat);
+    $message.text(message.text).appendTo($chat);
 
     // Add the message to the UI
     app.$chats.append($chat);
@@ -215,9 +215,9 @@ var app = {
 
   handleSubmit: function(event) {
     var message = {
-      username: app.username,
-      text: app.$message.val(),
-      roomname: app.roomname || 'lobby'
+      user: app.username,
+      'message_text': app.$message.val(),
+      room: app.roomname || 'lobby'
     };
 
     console.log(JSON.stringify(message));

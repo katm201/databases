@@ -8,19 +8,21 @@ module.exports = {
   messages: {
     get: function (query, callback) {
 
-      chatter.Messages.all().then(messages => { callback(messages); });
-
-      // if (Object.keys(query).length === 0) {
-      //   query = 'SELECT messages.id, messages.room, usernames.name, messages.message_text FROM messages, usernames WHERE usernames.id = messages.user';
-      // }
-      
-      // db.connection.query(query, function(err, results, fields) {
-      //   if (err) {
-      //     console.error(err);
-      //   } else { 
-      //     callback(results);
-      //   }
-      // });      
+      chatter.Messages.findAll({
+        include: chatter.Users
+      }).then( messages => { 
+        var formatted = messages.map( message => {
+          return {
+            id: message.id,
+            text: message.message_text,
+            room: message.room,
+            createdAt: message.createdAt,
+            user: message.User.name
+          };
+        });
+        callback(formatted); 
+      });
+ 
     }, 
     post: function (message, callback) {
         
