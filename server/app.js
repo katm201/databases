@@ -1,5 +1,6 @@
 var express = require('express');
-var db = require('./db');
+// var db = require('./db/index.js');
+// var orm = require('./db/orm_db.js');
 var CORS = require('cors');
 
 // Middleware
