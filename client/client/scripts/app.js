@@ -216,7 +216,7 @@ var app = {
   handleSubmit: function(event) {
     var message = {
       user: app.username,
-      'message_text': app.$message.val(),
+      text: app.$message.val(),
       room: app.roomname || 'lobby'
     };
 
