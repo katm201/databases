@@ -4,30 +4,36 @@ var express = require('express');
 // var expResponse = require('express-response');
 
 module.exports = {
+
   messages: {
-    get: function (request, response) {
-      let query = request.query;
-      models.messages.get(query, function(results) {
-        response.end(JSON.stringify(results));
+    get: function (req, res) {
+      models.messages.get(function(err, results) {
+        if (err) { /* do something */ }
+        res.json(results);
       });
-    }, // a function which handles a get request for all messages
-    post: function (request, response) {
-      models.messages.post(request.body, function(results) {
-        response.end(JSON.stringify(results));
+    },
+    post: function (req, res) {
+      var params = [req.body.message, req.body.username, req.body.roomname];
+      models.messages.post(params, function(err, results) {
+        if (err) { /* do something */ }
+        res.sendStatus(201);
       });
-    }, // a function which handles posting a message to the database
-    
-    
+    }
   },
 
   users: {
-    
     get: function (req, res) {
-      // this function handles a request for all posts from a particular user
+      models.users.get(function(err, results) {
+        if (err) { /* do something */ }
+        res.json(results);
+      });
     },
-    
     post: function (req, res) {
-      // this function handles a request to...add a new user?
+      var params = [req.body.username];
+      models.users.post(params, function(err, results) {
+        if (err) { /* do something */ }
+        res.sendStatus(201);
+      });
     }
   }
 };

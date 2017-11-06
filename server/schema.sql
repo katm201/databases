@@ -5,16 +5,16 @@ USE chat;
 /* Create other tables and define schemas for them here! */
 CREATE TABLE usernames (
   /* Describe your table here.*/
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  name TEXT
+  id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name TEXT NOT NULL
 );
 
 CREATE TABLE messages (
   /* Describe your table here.*/
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  room TEXT,
-  user INTEGER,
-  message_text TEXT,
+  room TEXT NOT NULL,
+  user INTEGER NOT NULL,
+  message_text TEXT NOT NULL,
   -- created_at DATETIME,
   FOREIGN KEY(user) REFERENCES usernames(id)
 );
