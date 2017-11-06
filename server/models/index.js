@@ -1,27 +1,28 @@
-var db = require('../db');
+var Sequelize = require('sequelize');
+
+var db = require('../db/index.js');
+var chatter = require('../db/orm_db.js');
+
 
 module.exports = {
   messages: {
     get: function (query, callback) {
+
+      chatter.Messages.all().then(messages => { callback(messages); });
+
+      // if (Object.keys(query).length === 0) {
+      //   query = 'SELECT messages.id, messages.room, usernames.name, messages.message_text FROM messages, usernames WHERE usernames.id = messages.user';
+      // }
       
-      if (Object.keys(query).length === 0) {
-        query = 'SELECT messages.id, messages.room, usernames.name, messages.message_text FROM messages, usernames WHERE usernames.id = messages.user';
-      }
-      
-      db.connection.query(query, function(err, results, fields) {
-        if (err) {
-          console.error(err);
-        } else { 
-          callback(results);
-        }
-      });      
+      // db.connection.query(query, function(err, results, fields) {
+      //   if (err) {
+      //     console.error(err);
+      //   } else { 
+      //     callback(results);
+      //   }
+      // });      
     }, 
     post: function (message, callback) {
-      
-      // retrieve usernames
-        // if username isn't present
-          // insert into both usernames and the message
-        // if username is present, insert message (using the user's key)
         
       module.exports.messages.get('SELECT * FROM usernames', function(results) {
         var newUser = true;
