@@ -13,7 +13,7 @@ module.exports = {
         var formatted = messages.map( message => {
           return {
             id: message.id,
-            text: message.message_text,
+            text: message['message_text'],
             room: message.room,
             createdAt: message.createdAt,
             user: message.User.name
@@ -33,7 +33,7 @@ module.exports = {
         })
         .then(function(id) {
           var formatted = {
-            message_text: message.text,
+            'message_text': message.text,
             UserId: id,
             room: message.room
           };
