@@ -24,7 +24,8 @@ var Messages = db.define('Messages', {
   room: Sequelize.STRING,
 }, {timestamps: true});
 
-Messages.belongsTo(Users)
+Messages.belongsTo(Users);
+Users.hasMany(Messages);
 
 Users.sync()
   .then(function() {
@@ -38,7 +39,7 @@ Users.sync()
       where: {id: 1}, 
       defaults: {
         room: 'lobby', 
-        message_text: 'default starting message',
+        'message_text': 'default starting message',
         UserId: 1
       }
     });
